@@ -45,6 +45,7 @@ class DocstringAuditADKAgent(AgentWithTaskManager):
     guidelines to identify discrepancies and areas of non-adherence.
     """
     SUPPORTED_CONTENT_TYPES = ['text', 'text/plain', 'application/json']
+    """List of supported content types for the agent."""
 
     def __init__(self):
         """
@@ -63,6 +64,7 @@ class DocstringAuditADKAgent(AgentWithTaskManager):
         self._genai_client = genai.Client(api_key=self._google_api_key)
 
         self._audit_model_name = 'gemini-2.5-flash-preview-04-17'
+        """The name of the Google GenAI model used for docstring auditing."""
 
         # Defines the core prompt structure for the AI model used for docstring auditing.
         # It expects the following placeholders to be formatted:
@@ -103,6 +105,9 @@ Provide your audit findings in a JSON format matching the following schema:
     def get_processing_message(self) -> str:
         """
         Returns the message indicating the agent's current processing state.
+
+        Returns:
+            str: A string describing the current processing state.
         """
         return 'Auditing docstrings...'
 
@@ -125,13 +130,11 @@ Provide your audit findings in a JSON format matching the following schema:
 
         Returns:
             An AuditReport object containing the discrepancies found in the file,
-            along with a calculated score and confidence. Note that potential errors
-            during processing (like API errors or JSON parsing issues) are caught
-            internally and reported as Discrepancy objects within the returned report's
-            discrepancies list, rather than being raised as exceptions by this method.
-
-        Notes:
-            Catches and reports `google.genai.errors.APIError` as a Discrepancy.
+            along with a calculated score and confidence. Internal processing errors
+            (including `SyntaxError`, `json.JSONDecodeError`, `google.genai.errors.APIError`,
+            and other generic `Exception` types) are caught and reported as Discrepancy
+            objects within the returned report's `discrepancies` list, rather than
+            being raised as exceptions by this method.
         """
         print(f"DEBUG: Starting Google GenAI processing for file: {file_name}")
 

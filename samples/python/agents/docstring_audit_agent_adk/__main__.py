@@ -1,3 +1,5 @@
+"""Script to set up and run the Docstring Audit ADK Agent server."""
+
 import logging
 import os
 
@@ -25,6 +27,18 @@ logger = logging.getLogger(__name__)
 @click.option('--host', default='localhost')
 @click.option('--port', default=10002)
 def main(host, port):
+    """
+    Sets up and starts the A2A server for the Docstring Audit ADK Agent.
+
+    Args:
+        host (str): The hostname or IP address to bind the server to.
+        port (int): The port number to listen on.
+
+    Raises:
+        MissingAPIKeyError: If the GOOGLE_API_KEY environment variable is not set
+                            and GOOGLE_GENAI_USE_VERTEXAI is not TRUE.
+        Exception: If any other error occurs during server startup.
+    """
     try:
         # Check for API key only if Vertex AI is not configured
         if not os.getenv('GOOGLE_GENAI_USE_VERTEXAI') == 'TRUE':
